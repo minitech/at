@@ -1,0 +1,7 @@
+{
+	"name": "at",
+	"version": "0.1.0",
+	"description": "Templates with less features but still more than PHP.",
+	"keywords": ["template"],
+	"files": ["index.js"]
+}
