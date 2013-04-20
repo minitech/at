@@ -4,7 +4,7 @@
 
 ## Syntax
 
-If there’s an `@` at the beginning of a line (excluding tabs and newlines at the beginning of a line), it’s treated as code. For example:
+If there’s an `@` at the beginning of a line (excluding tabs and spaces at the beginning of a line), it’s treated as code. For example:
 
 ```html
 @ if(false) {
@@ -34,7 +34,7 @@ If you have an ambiguity with `@(` appearing at the start of a line that should 
 
 ```js
 var at = require('at');
-var template = at.compile('This @(data.subject) thing is simplish!');
+var template = at.compile('@(data.subject) is simplish!');
 
 template({subject: '@'}) // @ is simplish!
 ```
