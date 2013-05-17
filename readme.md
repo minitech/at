@@ -20,7 +20,7 @@ Outside of those code blocks, `@(…)` sections are treated as expressions and i
 Operator precedence! <code>(5 + 3) * (2 + 8) = @((5 + 3) * (2 + 8))</code>
 ```
 
-If you have an ambiguity with `@(` appearing at the start of a line that should be a code block, just put a space between then:
+If you have an ambiguity with `@(` appearing at the start of a line that should be a code block, just put a space between them:
 
 ```html
 @ (odd + prototypes).whatever();
