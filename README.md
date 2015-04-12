@@ -2,9 +2,22 @@
 
 # @
 
-@ is another template engine. All the rest of them have too many features.
+@ is simple string interpolation for HTML.
 
-## Syntax
+## Installation
+
+    npm install at
+
+## Usage
+
+```js
+var at = require('at');
+var template = at.compile('@(data.subject) is simplish!');
+
+template({subject: '@'}) // @ is simplish!
+```
+
+## Template syntax
 
 If there’s an `@` at the beginning of a line (excluding tabs and spaces at the
 beginning of a line), it’s treated as code. For example:
@@ -19,7 +32,7 @@ beginning of a line), it’s treated as code. For example:
 
 Outside of those code blocks, `@(…)` sections are treated as expressions and
 inserted as text, escaped as HTML. For raw HTML, use `@!(…)`. It even counts
-parentheses, so you can totally do things like this:
+parentheses, so you can do things like this:
 
 ```html
 Operator precedence! <code>(5 + 3) * (2 + 8) = @((5 + 3) * (2 + 8))</code>
@@ -30,17 +43,4 @@ be a code block, just put a space between them:
 
 ```html
 @ (odd + prototypes).whatever();
-```
-
-## Installation
-
-    npm install at
-
-## Usage
-
-```js
-var at = require('at');
-var template = at.compile('@(data.subject) is simplish!');
-
-template({subject: '@'}) // @ is simplish!
 ```
