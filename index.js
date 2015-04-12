@@ -31,7 +31,9 @@ exports.compile = function compile(template) {
 		switch (state) {
 			case START_OF_LINE:
 				if (c === '@') {
-					if (template.charAt(i + 1) === '(') {
+					var next = template.charAt(i + 1);
+
+					if (next === '(' || next === '!') {
 						state = MAYBE_INLINE_CODE;
 					} else {
 						state = FULL_LINE_CODE;
