@@ -1,50 +1,47 @@
 'use strict';
 
-var amp = /&/g,
-    gt = /</g,
-    lt = />/g,
-    quot = /"/g;
+var amp = /&/g;
+var gt = /</g;
+var lt = />/g;
+var quot = /"/g;
 
 function escapeHTML(text) {
-	return ('' + text).replace(amp , '&amp;' )
-	                  .replace(gt  , '&gt;'  )
-	                  .replace(lt  , '&lt;'  )
+	return ('' + text).replace(amp, '&amp;')
+	                  .replace(gt, '&gt;')
+	                  .replace(lt, '&lt;')
 	                  .replace(quot, '&quot;');
 }
 
-var S = 0
-, START_OF_LINE = S++
-, IN_LINE = S++
-, FULL_LINE_CODE = S++
-, MAYBE_INLINE_CODE = S++
-, MAYBE_UNESCAPED_INLINE_CODE = S++
-, INLINE_CODE = S++
-;
+var START_OF_LINE = 0;
+var IN_LINE = 1;
+var FULL_LINE_CODE = 2;
+var MAYBE_INLINE_CODE = 3;
+var MAYBE_UNESCAPED_INLINE_CODE = 4;
+var INLINE_CODE = 5;
 
-module.exports.compile = function(template) {
+exports.compile = function compile(template) {
 	// The infinite state machine!
 	var state = START_OF_LINE;
-	var i, c;
 	var text = '';
 	var code = 'var __output = "";\n\n';
 
-	for(i = 0; i < template.length; i++) {
-		c = template.charAt(i);
+	for (var i = 0; i < template.length; i++) {
+		var c = template.charAt(i);
 
-		switch(state) {
+		switch (state) {
 			case START_OF_LINE:
-				if(c === '@') {
-					if(template.charAt(i + 1) === '(') {
+				if (c === '@') {
+					if (template.charAt(i + 1) === '(') {
 						state = MAYBE_INLINE_CODE;
 					} else {
 						state = FULL_LINE_CODE;
 
-						if(text) {
+						if (text) {
 							code += '__output += ' + JSON.stringify(text) + ';\n';
 							text = '';
 						}
 					}
-				} else if(c === ' ' || c === '\t') {
+				} else if (c === ' ' || c === '\t') {
 					text += c;
 				} else {
 					state = IN_LINE;
@@ -53,10 +50,10 @@ module.exports.compile = function(template) {
 
 				break;
 			case IN_LINE:
-				if(c === '@') {
+				if (c === '@') {
 					state = MAYBE_INLINE_CODE;
 				} else {
-					if(c === '\n') {
+					if (c === '\n') {
 						state = START_OF_LINE;
 					}
 
@@ -65,7 +62,7 @@ module.exports.compile = function(template) {
 
 				break;
 			case FULL_LINE_CODE:
-				if(c === '\n') {
+				if (c === '\n') {
 					state = START_OF_LINE;
 				}
 
@@ -73,16 +70,16 @@ module.exports.compile = function(template) {
 
 				break;
 			case MAYBE_INLINE_CODE:
-				if(c === '(') {
+				if (c === '(') {
 					state = INLINE_CODE;
 
-					if(text) {
+					if (text) {
 						code += '__output += ' + JSON.stringify(text) + ' + __escape(';
 						text = '';
 					} else {
 						code += '__output += __escape('; // Please don’t interpolate expressions with unparenthesized comma operators.
 					}
-				} else if(c === '!') {
+				} else if (c === '!') {
 					state = MAYBE_UNESCAPED_INLINE_CODE;
 				} else {
 					state = IN_LINE;
@@ -92,10 +89,10 @@ module.exports.compile = function(template) {
 
 				break;
 			case MAYBE_UNESCAPED_INLINE_CODE:
-				if(c === '(') {
+				if (c === '(') {
 					state = INLINE_CODE;
 
-					if(text) {
+					if (text) {
 						code += '__output += ' + JSON.stringify(text) + ' + (';
 						text = '';
 					} else {
@@ -109,10 +106,10 @@ module.exports.compile = function(template) {
 
 				break;
 			case INLINE_CODE:
-				if(c === '(') {
+				if (c === '(') {
 					state++;
 					code += '(';
-				} else if(c === ')') {
+				} else if (c === ')') {
 					state = IN_LINE;
 					code += ');\n';
 				} else {
@@ -121,22 +118,23 @@ module.exports.compile = function(template) {
 
 				break;
 			default:
-				if(state <= INLINE_CODE) {
+				if (state <= INLINE_CODE) {
 					throw new Error('Unexpected state ' + state);
 				}
 
-				if(c === '(') state++;
-				else if(c === ')') state--;
+				if (c === '(') {
+					state++;
+				} else if (c === ')') {
+					state--;
+				}
+
 				code += c;
 		}
 	}
 
-	if(text) {
+	if (text) {
 		code += '__output += ' + JSON.stringify(text) + ';';
 	}
-
-	//console.log('Ended on state ' + state);
-	//console.log(code);
 
 	return new Function('__escape', 'data', code + '\nreturn __output;').bind(null, escapeHTML);
 };
