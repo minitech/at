@@ -3,6 +3,5 @@ node_js:
     - iojs
     - "0.12"
     - "0.10"
-    - "0.8"
 script: node_modules/tap/bin/tap.js test.js
 sudo: false
