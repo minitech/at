@@ -76,10 +76,10 @@ exports.compile = function compile(template) {
 					state = INLINE_CODE;
 
 					if (text) {
-						code += '__output += ' + JSON.stringify(text) + ' + __escape(';
+						code += '__output += ' + JSON.stringify(text) + ' + __escape((';
 						text = '';
 					} else {
-						code += '__output += __escape('; // Please don’t interpolate expressions with unparenthesized comma operators.
+						code += '__output += __escape((';
 					}
 				} else if (c === '!') {
 					state = MAYBE_UNESCAPED_INLINE_CODE;
@@ -95,10 +95,10 @@ exports.compile = function compile(template) {
 					state = INLINE_CODE;
 
 					if (text) {
-						code += '__output += ' + JSON.stringify(text) + ' + (';
+						code += '__output += ' + JSON.stringify(text) + ' + ((';
 						text = '';
 					} else {
-						code += '__output += (';
+						code += '__output += ((';
 					}
 				} else {
 					state = IN_LINE;
@@ -113,7 +113,7 @@ exports.compile = function compile(template) {
 					code += '(';
 				} else if (c === ')') {
 					state = IN_LINE;
-					code += ');\n';
+					code += '));\n';
 				} else {
 					code += c;
 				}
