@@ -1,3 +1,5 @@
+[![Build status](https://api.travis-ci.org/minitech/at.svg)](https://travis-ci.org/minitech/at)
+
 # @
 
 @ is another template engine. All the rest of them have too many features.
